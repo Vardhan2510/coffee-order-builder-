@@ -8,14 +8,27 @@
   </head>
   <body>
     <header>
-      <h1>☕ Coffee Order Builder</h1>
+      <div class="header-content">
+        <h1>☕ Coffee Order Builder</h1>
+        <p class="subtitle">Craft your handcrafted beverage & order live</p>
+      </div>
+      <div class="header-actions">
+        <div class="server-status" id="server-status" title="Server Connection Status">
+          <span class="status-dot"></span>
+          <span class="status-text">Connecting...</span>
+        </div>
+        <button id="btn-toggle-history" class="btn-secondary" title="View Recent Orders">
+          📋 Order History <span class="badge-count" id="history-count">0</span>
+        </button>
+      </div>
     </header>
 
     <main class="app">
+      <!-- Left Panel: Customization Options -->
       <section class="panel" aria-label="Order options">
         <div class="option-group">
           <h2>Drink</h2>
-          <div class="radio-group">
+          <div class="radio-group" id="drinks-container">
             <label><input type="radio" name="drink" value="espresso" checked /> Espresso</label>
             <label><input type="radio" name="drink" value="latte" /> Latte</label>
             <label><input type="radio" name="drink" value="cappuccino" /> Cappuccino</label>
@@ -26,7 +39,7 @@
 
         <div class="option-group">
           <h2>Size</h2>
-          <div class="radio-group">
+          <div class="radio-group" id="sizes-container">
             <label><input type="radio" name="size" value="small" /> Small</label>
             <label><input type="radio" name="size" value="medium" checked /> Medium</label>
             <label><input type="radio" name="size" value="large" /> Large</label>
@@ -35,7 +48,7 @@
 
         <div class="option-group">
           <h2>Milk</h2>
-          <div class="radio-group">
+          <div class="radio-group" id="milks-container">
             <label><input type="radio" name="milk" value="regular" checked /> Regular</label>
             <label><input type="radio" name="milk" value="oat" /> Oat</label>
             <label><input type="radio" name="milk" value="almond" /> Almond</label>
@@ -46,7 +59,7 @@
 
         <div class="option-group">
           <h2>Extras</h2>
-          <div class="checkbox-group">
+          <div class="checkbox-group" id="extras-container">
             <label><input type="checkbox" name="extras" value="extrashot" /> Extra Shot</label>
             <label><input type="checkbox" name="extras" value="vanilla" /> Vanilla Syrup</label>
             <label><input type="checkbox" name="extras" value="caramel" /> Caramel Syrup</label>
@@ -55,6 +68,7 @@
         </div>
       </section>
 
+      <!-- Right Visual Area: Cup & Summary & Actions -->
       <section class="visual" aria-label="Visual cup and order summary">
         <div class="cup-scene">
           <div class="cup" id="cup">
@@ -72,9 +86,78 @@
           </div>
         </div>
 
-        <div class="summary" id="summary" aria-live="polite"></div>
+        <div class="summary-wrapper">
+          <div class="summary" id="summary" aria-live="polite">
+            <!-- Dynamically populated by script.js -->
+          </div>
+
+          <div class="order-action-card">
+            <div class="input-group">
+              <label for="customer-name">Customer Name</label>
+              <input type="text" id="customer-name" placeholder="e.g. Alex" maxlength="30" autocomplete="name" />
+            </div>
+
+            <button id="btn-place-order" class="btn-primary">
+              <span class="btn-icon">☕</span>
+              <span class="btn-text">Place Order</span>
+              <span class="btn-spinner hidden" id="order-spinner"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Order Tracker Widget (Shown when order placed) -->
+        <div class="tracker-card hidden" id="tracker-card">
+          <div class="tracker-header">
+            <div>
+              <span class="tracker-tag">Live Order Status</span>
+              <h4 id="tracker-order-id">#COF-0000</h4>
+            </div>
+            <span class="tracker-status-pill received" id="tracker-status-pill">Received</span>
+          </div>
+
+          <div class="tracker-progress">
+            <div class="progress-track">
+              <div class="progress-bar" id="tracker-progress-bar"></div>
+            </div>
+            <div class="progress-steps">
+              <div class="step active" id="step-received">
+                <div class="step-dot">1</div>
+                <span>Received</span>
+              </div>
+              <div class="step" id="step-brewing">
+                <div class="step-dot">2</div>
+                <span>Brewing</span>
+              </div>
+              <div class="step" id="step-ready">
+                <div class="step-dot">3</div>
+                <span>Ready</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tracker-footer">
+            <span id="tracker-customer">Customer: Alex</span>
+            <button class="btn-link" id="btn-dismiss-tracker">New Order</button>
+          </div>
+        </div>
       </section>
     </main>
+
+    <!-- Slide-over Order History Modal / Drawer -->
+    <div class="modal-backdrop hidden" id="history-backdrop">
+      <aside class="history-drawer" id="history-drawer">
+        <div class="drawer-header">
+          <h3>Recent Orders</h3>
+          <button class="btn-close" id="btn-close-history" aria-label="Close history">&times;</button>
+        </div>
+        <div class="drawer-content" id="history-list">
+          <div class="loading-state">Loading order history...</div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
 
     <script src="script.js"></script>
   </body>
