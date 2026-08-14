@@ -1,0 +1,98 @@
+[
+  {
+    "id": "COF-1617",
+    "customerName": "Guest",
+    "drink": "espresso",
+    "drinkLabel": "Espresso",
+    "size": "medium",
+    "sizeLabel": "Medium",
+    "milk": "regular",
+    "milkLabel": "Regular Milk",
+    "extras": [],
+    "pricing": {
+      "drink": 2.5,
+      "size": 0.5,
+      "milk": 0,
+      "extras": [],
+      "subtotal": 3,
+      "tax": 0.24,
+      "total": 3.24
+    },
+    "status": "completed",
+    "createdAt": "2026-08-14T06:25:47.073Z",
+    "estimatedSeconds": 10,
+    "updatedAt": "2026-08-14T06:26:15.097Z"
+  },
+  {
+    "id": "COF-2786",
+    "customerName": "Sam",
+    "drink": "latte",
+    "drinkLabel": "Latte",
+    "size": "medium",
+    "sizeLabel": "Medium",
+    "milk": "oat",
+    "milkLabel": "Oat Milk",
+    "extras": [
+      "extrashot",
+      "caramel"
+    ],
+    "pricing": {
+      "drink": 3.8,
+      "size": 0.5,
+      "milk": 0,
+      "extras": [
+        {
+          "key": "extrashot",
+          "label": "Extra Shot",
+          "price": 0.75
+        },
+        {
+          "key": "caramel",
+          "label": "Caramel Syrup",
+          "price": 0.6
+        }
+      ],
+      "subtotal": 5.65,
+      "tax": 0.45,
+      "total": 6.1
+    },
+    "status": "completed",
+    "createdAt": "2026-08-14T06:23:55.316Z",
+    "estimatedSeconds": 24,
+    "updatedAt": "2026-08-14T06:24:23.323Z"
+  },
+  {
+    "id": "COF-1001",
+    "customerName": "Barista Special",
+    "drink": "latte",
+    "size": "large",
+    "milk": "oat",
+    "extras": [
+      "caramel",
+      "whipped"
+    ],
+    "pricing": {
+      "drink": 3.8,
+      "size": 1,
+      "milk": 0,
+      "extras": [
+        {
+          "key": "caramel",
+          "label": "Caramel Syrup",
+          "price": 0.6
+        },
+        {
+          "key": "whipped",
+          "label": "Whipped Cream",
+          "price": 0.5
+        }
+      ],
+      "subtotal": 5.9,
+      "tax": 0.47,
+      "total": 6.37
+    },
+    "status": "completed",
+    "createdAt": "2026-08-14T05:22:37.647Z",
+    "estimatedSeconds": 20
+  }
+]
