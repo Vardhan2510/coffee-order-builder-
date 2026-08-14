@@ -1,4 +1,3 @@
-// Initial State
 const order = {
   drink: "espresso",
   size: "medium",
@@ -7,7 +6,6 @@ const order = {
   customerName: ""
 };
 
-// Default pricing & visual configurations (synced with backend /api/menu)
 let prices = {
   espresso: 2.50,
   latte: 3.80,
@@ -44,11 +42,8 @@ const extraLabels = {
   whipped: "Whipped Cream",
 };
 
-// Tracking and Polling State
 let activeOrderId = null;
 let trackingInterval = null;
-
-// DOM Elements
 const cup = document.getElementById("cup");
 const summary = document.getElementById("summary");
 const serverStatus = document.getElementById("server-status");
@@ -68,9 +63,6 @@ const historyList = document.getElementById("history-list");
 const historyCountBadge = document.getElementById("history-count");
 const toastContainer = document.getElementById("toast-container");
 
-// -------------------------------------------------------------
-// 1. BACKEND INITIALIZATION & MENU SYNC
-// -------------------------------------------------------------
 async function initializeMenuFromBackend() {
   try {
     const res = await fetch('/api/menu');
@@ -79,20 +71,16 @@ async function initializeMenuFromBackend() {
 
     if (data.success && data.data) {
       const menu = data.data;
-      
-      // Update local drink prices & colors
       Object.keys(menu.drinks).forEach(d => {
         prices[d] = menu.drinks[d].price;
         if (menu.drinks[d].color) drinkColours[d] = menu.drinks[d].color;
       });
 
-      // Update sizes & heights
       Object.keys(menu.sizes).forEach(s => {
         prices[s] = menu.sizes[s].price;
         if (menu.sizes[s].height) sizeHeight[s] = menu.sizes[s].height;
       });
 
-      // Update extras
       Object.keys(menu.extras).forEach(e => {
         prices[e] = menu.extras[e].price;
         extraLabels[e] = menu.extras[e].label;
@@ -123,9 +111,6 @@ function setServerOnline(isOnline) {
   }
 }
 
-// -------------------------------------------------------------
-// 2. VISUAL CUP & ORDER SUMMARY
-// -------------------------------------------------------------
 function updateCup() {
   if (cup && drinkColours[order.drink]) {
     cup.style.setProperty("--fill-colour", drinkColours[order.drink]);
@@ -185,9 +170,6 @@ function updateSummary() {
   `;
 }
 
-// -------------------------------------------------------------
-// 3. EVENT LISTENERS FOR SELECTIONS
-// -------------------------------------------------------------
 document.querySelectorAll('input[name="drink"]').forEach((input) => {
   input.addEventListener("change", function () {
     order.drink = this.value;
@@ -227,12 +209,8 @@ document.querySelectorAll('input[name="extras"]').forEach((input) => {
   });
 });
 
-// -------------------------------------------------------------
-// 4. BACKEND ORDER SUBMISSION & LIVE TRACKING
-// -------------------------------------------------------------
 btnPlaceOrder.addEventListener("click", async () => {
-  const customerName = customerNameInput.value.trim() || "Guest";
-  
+  const customerName = customerNameInput.value.trim() || "Guest";  
   const payload = {
     drink: order.drink,
     size: order.size,
@@ -241,10 +219,8 @@ btnPlaceOrder.addEventListener("click", async () => {
     customerName: customerName
   };
 
-  // UI Loading State
   btnPlaceOrder.disabled = true;
   orderSpinner.classList.remove("hidden");
-
   try {
     const response = await fetch('/api/orders', {
       method: 'POST',
@@ -253,17 +229,13 @@ btnPlaceOrder.addEventListener("click", async () => {
       },
       body: JSON.stringify(payload)
     });
-
     const result = await response.json();
-
     if (!response.ok || !result.success) {
       throw new Error(result.error || 'Failed to place order.');
     }
 
     const createdOrder = result.order;
     showToast(`☕ Order #${createdOrder.id} placed! Total: $${createdOrder.pricing.total.toFixed(2)}`, 'success');
-    
-    // Start Live Order Tracking
     startTrackingOrder(createdOrder);
     refreshOrderCount();
 
@@ -283,11 +255,7 @@ function startTrackingOrder(orderData) {
   trackerCustomer.textContent = `Customer: ${orderData.customerName || 'Guest'}`;
   
   renderTrackerStatus(orderData.status);
-
-  // Clear any existing polling
   if (trackingInterval) clearInterval(trackingInterval);
-
-  // Poll backend for status updates every 2.5 seconds
   trackingInterval = setInterval(async () => {
     if (!activeOrderId) return;
     try {
@@ -310,11 +278,8 @@ function renderTrackerStatus(status) {
   const stepReceived = document.getElementById("step-received");
   const stepBrewing = document.getElementById("step-brewing");
   const stepReady = document.getElementById("step-ready");
-
   trackerStatusPill.className = `tracker-status-pill ${status}`;
   trackerStatusPill.textContent = status.toUpperCase();
-
-  // Reset steps
   stepReceived.className = "step active";
   stepBrewing.className = "step";
   stepReady.className = "step";
@@ -337,9 +302,6 @@ btnDismissTracker.addEventListener("click", () => {
   activeOrderId = null;
 });
 
-// -------------------------------------------------------------
-// 5. ORDER HISTORY DRAWER & RE-ORDER
-// -------------------------------------------------------------
 async function refreshOrderCount() {
   try {
     const res = await fetch('/api/orders');
@@ -399,7 +361,6 @@ function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-// Global function for Reorder button
 window.reorderItem = function(drink, size, milk, extrasCsv) {
   const extras = extrasCsv ? extrasCsv.split(',').filter(Boolean) : [];
 
@@ -408,7 +369,6 @@ window.reorderItem = function(drink, size, milk, extrasCsv) {
   order.milk = milk;
   order.extras = extras;
 
-  // Sync Form UI inputs
   const drinkRadio = document.querySelector(`input[name="drink"][value="${drink}"]`);
   if (drinkRadio) drinkRadio.checked = true;
 
@@ -443,9 +403,6 @@ historyBackdrop.addEventListener("click", (e) => {
   }
 });
 
-// -------------------------------------------------------------
-// 6. TOAST NOTIFICATIONS
-// -------------------------------------------------------------
 function showToast(message, type = 'success') {
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
@@ -460,7 +417,4 @@ function showToast(message, type = 'success') {
   }, 4000);
 }
 
-// -------------------------------------------------------------
-// 7. INITIALIZE ON LOAD
-// -------------------------------------------------------------
 initializeMenuFromBackend();
